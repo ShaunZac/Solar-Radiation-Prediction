@@ -6,9 +6,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import datetime
 
-df = pd.read_csv('19279_18.95_72.85_2000.csv', header = 2)
+df = pd.read_csv('data/19279_18.95_72.85_2000.csv', header = 2)
 for i in range(1, 15):
-    temp_df = pd.read_csv('19279_18.95_72.85_20{:02d}.csv'.format(i), header = 2)
+    temp_df = pd.read_csv('data/19279_18.95_72.85_20{:02d}.csv'.format(i), header = 2)
     df['DHI'] += temp_df['DHI']
 df['DHI'] /= 15
 df
