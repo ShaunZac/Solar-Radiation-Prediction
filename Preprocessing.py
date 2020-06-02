@@ -10,9 +10,6 @@ df = {}
 for i in range(15):
     df[str(i)] = pd.read_csv('data/19279_18.95_72.85_20{:02d}.csv'.format(i), 
                              header = 2)
-for i in range(15):
-    avg_df += df[i]
-avg_df /= 15
 
 def autocorrelation(data, k):
     """
