@@ -10,6 +10,9 @@ df = {}
 for i in range(15):
     df[str(i)] = pd.read_csv('data/19279_18.95_72.85_20{:02d}.csv'.format(i), 
                              header = 2)
+for i in range(15):
+    avg_df += df[i]
+avg_df /= 15
 
 def autocorrelation(data, k):
     """
@@ -67,10 +70,20 @@ def getCorrelationTable(df):
     
     return corr_table
 
-def normalizeSigmoid():
-    
-    return
+def normalizeSigmoid(df):
+    rows=len(df)
+    mu=np.sum(df,axis=0)/rows
+    SD= np.sqrt(np.sum(np.multiply(df,df),axis=0)/rows-np.square(mu))
+    return 1/(1+np.exp(-(df-mu)/SD))
 
-def normalizeRatio():
-    
-    return
+def normalizeRatio(df):
+    R_t = df['Clearsky DHI']
+    r_t = []
+    for i in range(len(df)):
+        if R_t[i] == 0:
+            r_t.append(1)
+        else:
+            r_t.append(R_t[i])
+    data = df.div(r_t,axis = 0)
+    data['Clearsky DHI'] = R_t
+    return data
