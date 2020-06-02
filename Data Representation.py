@@ -32,3 +32,6 @@ data = data.drop([ '1',  '2',  '3',  '4',  '5',  '6',  '7',  '8',  '9', '10', '1
        '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'], axis=1)
 data.head()
 sns.heatmap(data.to_numpy(), cmap="CMRmap")
+plt.xlabel("Hour of the day")
+plt.ylabel("Day of the year")
+plt.title("Solar Radiation variation")
