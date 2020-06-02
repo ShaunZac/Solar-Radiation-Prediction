@@ -33,6 +33,40 @@ def autocorrelation(data, k):
     
     return r
 
+def getCorrelationTable(df):
+    """
+    Parameters
+    ----------
+    df : dict
+        Dictionary containing DataFrames of each year.
+
+    Returns
+    -------
+    corr_table : pandas DataFrame
+        Contains the autocorrelation table required.
+    """
+    # getting avg DHI of all years (because that's what is done in the paper)
+    DHI = np.zeros(8760) #8760 is the number of rows
+    # taking sum of all DHI
+    for i in range(15):
+        DHI += df[str(i)]['DHI'].to_numpy()
+    # converting sum to average
+    DHI /= 15
+    
+    # filling the correlation table
+    table = np.zeros((4, 4))
+    for i in range(4):
+        for j in range(4):
+            table[i, j] = autocorrelation(DHI, 24*(3-j) + (3-i))
+            
+    indices = ['i - 3', 'i - 2', 'i - 1', 'i']
+    cols = ['j - 3', 'j - 2', 'j - 1', 'j']
+    corr_table = pd.DataFrame(table, columns = cols)
+    corr_table['Hour/Day'] = indices
+    corr_table = corr_table.set_index('Hour/Day')
+    
+    return corr_table
+
 def normalizeSigmoid():
     
     return
