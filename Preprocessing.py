@@ -84,7 +84,7 @@ def initializeInputOutput(df, predict_hour, save = True):
     full_df = full_df.reset_index(drop = True)
     
     # dropping unnecessary columns
-    full_df = full_df.drop(['DNI', 'GHI', 'Clearsky DHI', 'Clearsky DNI', 
+    full_df = full_df.drop(['DNI', 'GHI', 'Clearsky DHI', 'Clearsky DNI', 'Minute',
                             'Clearsky GHI', 'Snow Depth', 'Fill Flag'], axis = 1)
     # dropping the first few rows since prediction requires
     # 'predict_hour' number of prev data
