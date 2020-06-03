@@ -67,20 +67,3 @@ def getCorrelationTable(df):
     
     return corr_table
 
-def normalizeSigmoid(df):
-    rows=len(df)
-    mu=np.sum(df,axis=0)/rows
-    SD= np.sqrt(np.sum(np.multiply(df,df),axis=0)/rows-np.square(mu))
-    return 1/(1+np.exp(-(df-mu)/SD))
-
-def normalizeRatio(df):
-    R_t = df['Clearsky DHI']
-    r_t = []
-    for i in range(len(df)):
-        if R_t[i] == 0:
-            r_t.append(1)
-        else:
-            r_t.append(R_t[i])
-    data = df.div(r_t,axis = 0)
-    data['Clearsky DHI'] = R_t
-    return data
