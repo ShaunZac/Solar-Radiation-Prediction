@@ -74,3 +74,40 @@ def plot_MAE_MAPE_years():
     
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
     plt.show()
+    
+def predHours(horizon):
+    """
+    Parameters
+    ----------
+    horizon : int
+        The prediction horizon in hours.
+
+    Returns
+    -------
+    mae : float
+        The mean absolute error calculated.
+    mape : float
+        The mean absolute percentage error calculated.
+    """
+    X_train, X_test, y_train, y_test = initializeInputOutput(df, 15, horizon)
+    
+    model = SVR()
+    model.fit(X_train, y_train)
+    
+    y_pred = model.predict(X_test)
+    y_pred = np.maximum(y_pred, 0)
+    
+    y_pred = pd.Series(y_pred)
+    y_test = pd.Series(y_test).reset_index(drop=True)
+    
+    print(str(i) + ".", "MAE:", mean_absolute_error(y_test, y_pred))
+    mae = mean_absolute_error(y_test, y_pred)
+    
+    y_pred_mape = y_pred.drop(index = y_test[y_test == 0].index)
+    y_test_mape = y_test.drop(index = y_test[y_test == 0].index)
+    
+    mape = np.mean(abs(y_test_mape - y_pred_mape)/y_pred_mape)
+    
+    print(str(i) + ".", "MAPE:", mape_now)
+    
+    return mae, mape
