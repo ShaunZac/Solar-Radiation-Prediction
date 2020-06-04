@@ -67,7 +67,7 @@ def normalizeSigmoid(df):
     
     return 1/(1 + np.exp(-(df-mu)/SD))
 
-def initializeInputOutput(df, num_years, save = True):
+def initializeInputOutput(df, num_years, predict_hour = 1):
     """
     Parameters
     ----------
@@ -75,6 +75,8 @@ def initializeInputOutput(df, num_years, save = True):
         Dictionary containing DataFrame for each year's data.
     num_years : int
         Training length in number of years.
+    predict_hour : int, optional
+        The number of hours further we want to predict. Default is 1.
 
     Returns
     -------
@@ -97,9 +99,9 @@ def initializeInputOutput(df, num_years, save = True):
     full_df = full_df.drop(['DNI', 'GHI', 'Clearsky DHI', 'Clearsky DNI', 'Minute',
                             'Clearsky GHI', 'Snow Depth', 'Fill Flag'], axis = 1)
     # dropping the first rows since prediction requires one day prev data
-    y = full_df['DHI'].iloc[1:].copy()
+    y = full_df['DHI'].iloc[predict_hour:].copy()
     X = full_df.copy()
-    X['DHI'] = X['DHI'].shift(1)
+    X['DHI'] = X['DHI'].shift(predict_hour)
     X = X.dropna()
     
     # split into train test samples
