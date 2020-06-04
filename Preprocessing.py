@@ -4,14 +4,6 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-# initializing dictionary that will contain each year's data
-df = {}
-
-# reading all data into df
-for i in range(15):
-    df[str(i)] = pd.read_csv('data/19279_18.95_72.85_20{:02d}.csv'.format(i), 
-                             header = 2)
-
 def autocorrelation(data, k):
     """
     Parameters
@@ -75,22 +67,39 @@ def normalizeSigmoid(df):
     
     return 1/(1 + np.exp(-(df-mu)/SD))
 
-def initializeInputOutput(df, predict_hour, save = True):
-    
+def initializeInputOutput(df, num_years, save = True):
+    """
+    Parameters
+    ----------
+    df : dict
+        Dictionary containing DataFrame for each year's data.
+    num_years : int
+        Training length in number of years.
+
+    Returns
+    -------
+    X_train : pandas DataFrame
+        Training input data.
+    X_test : pandas DataFrame
+        Test input data.
+    y_train : pandas DataFrame
+        Training output data.
+    y_test : pandas DataFrame
+        test output data.
+    """
     # making the full dataframe
     full_df = df['0'].copy()
-    for i in range(1, 15):
+    for i in range(1, num_years):
         full_df = full_df.append(df[str(i)].copy())
     full_df = full_df.reset_index(drop = True)
     
     # dropping unnecessary columns
     full_df = full_df.drop(['DNI', 'GHI', 'Clearsky DHI', 'Clearsky DNI', 'Minute',
                             'Clearsky GHI', 'Snow Depth', 'Fill Flag'], axis = 1)
-    # dropping the first few rows since prediction requires
-    # 'predict_hour' number of prev data
-    y = full_df['DHI'].iloc[predict_hour:].copy()
+    # dropping the first rows since prediction requires one day prev data
+    y = full_df['DHI'].iloc[1:].copy()
     X = full_df.copy()
-    X['DHI'] = X['DHI'].shift(predict_hour)
+    X['DHI'] = X['DHI'].shift(1)
     X = X.dropna()
     
     # split into train test samples
@@ -105,12 +114,4 @@ def initializeInputOutput(df, predict_hour, save = True):
     X_train = normalizeSigmoid(X_train)
     X_test = normalizeSigmoid(X_test)
     
-    if save:
-        X_train.to_csv('IO/X_train.csv')
-        y_train.to_csv('IO/y_train.csv')
-        X_test.to_csv('IO/X_test.csv')
-        y_test.to_csv('IO/y_test.csv')
-    
     return X_train, X_test, y_train, y_test
-
-X_train, X_test, y_train, y_test = initializeInputOutput(df, 1)
