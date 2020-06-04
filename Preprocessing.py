@@ -106,10 +106,6 @@ def initializeInputOutput(df, num_years, save = True):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 1/15,
                                                         random_state = 0)
     
-    # drop all training examples before 5 am and after 8 pm
-    y_train = y_train.drop(index = X_train[(X_train['Hour'] >= 20) | (X_train['Hour'] <= 5)].index)
-    X_train = X_train[(X_train['Hour'] < 20) & (X_train['Hour'] > 5)]
-    
     # normalizing the train and test inputs
     X_train = normalizeSigmoid(X_train)
     X_test = normalizeSigmoid(X_test)
