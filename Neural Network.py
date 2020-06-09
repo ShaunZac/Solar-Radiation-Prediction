@@ -41,6 +41,17 @@ def plotLoss(history):
     plt.ylabel("Mean Absolute Error $(W/m^2)$")
     plt.title("Variation of loss with epochs")
     plt.show()
+    
+def plotCorrelation():
+    # plotting the correlation between actual and predicted DHI
+    plt.figure()
+    plt.scatter(y_pred, y_test, marker = '.', color = 'g', linewidths = 0.01, label = 'Actual value')
+    plt.plot(y_pred, y_pred, color = 'r', label = 'Fitted line')
+    plt.xlabel("Predicted radiation $(W/m^2)$")
+    plt.ylabel("Actual radiation $(W/m^2)$")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 
 mae = []
 for i in range(1, 4):
@@ -55,3 +66,6 @@ for i in range(1, 4):
     
     mae.append(model.evaluate(X_test, y_test, verbose = 0)[1])
     print(str(i) + ".", "MAE:", mae[i-1])
+    
+y_pred = model.predict(X_test)
+plotCorrelation()
